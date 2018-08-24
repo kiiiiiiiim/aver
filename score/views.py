@@ -143,8 +143,6 @@ def get_monthly_score(date):
             else:
                 name_rank_dict[name] = name_rank_dict[name] + 1
 
-    print(json.dumps(name_rank_dict))
-
     for name, user in user_dict.items():
         user.rank = name_rank_dict[name]
 
