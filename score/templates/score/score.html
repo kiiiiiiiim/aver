@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div style="width:100%;">
+<table align="center" border="1px">
+    <tr>
+        <th>Date</th>
+        <th>Name</th>
+        <th>Score</th>
+    </tr>
+    {%for data in score%}
+    <tr>
+        <td>{{data.date|date:'y-m-d'}}</td>
+        <td>{{data.name}}</td>
+        <td>{{data.score}}</td>
+    </tr>
+    {% endfor %}
+</table>
+</div>
+</body>
+</html>

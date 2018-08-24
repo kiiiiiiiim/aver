@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<center><h1>{{date}}</h1></center>
+<table border="1px" align="center">
+    <tr>
+        <th>Rank</th>
+        <th>Name</th>
+        <th>Count</th>
+        <th>total</th>
+        <th>average</th>
+        <th>change average</th>
+        <th>change rank</th>
+    </tr>
+    {%for user in score %}
+    <tr>
+        <td align="right">{{user.rank}}</td>
+        <td align="center">{{user.name}}</td>
+        <td align="center">{{user.game_count}}</td>
+        <td align="center">{{user.total}}</td>
+        <td align="center">{{user.average|floatformat:-2}}</td>
+        <td align="center">{{user.change_average}}</td>
+        <td align="center">{{user.change_rank}}</td>
+    </tr>
+    {% endfor %}
+</table>
+</body>
+</html>

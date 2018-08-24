@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div style='width:50%; float:left'>
+    <table border="1px" align="right">
+        <tr>
+            <th>Date</th>
+            <th>Name</th>
+            <th colspan={{max_game}}>Score</th>
+        </tr>
+        {%for user in score %}
+        <tr>
+            <td>{{date}}</td>
+            <td>{{user.name}}</td>
+
+            {% for score_data in user.score_list %}
+            <td width="30px"><center>{{score_data}}</center></td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div style='width:50%; float:right'>
+    <table border="1px">
+        <tr>
+            <th>total</th>
+            <th>average</th>
+        </tr>
+        {%for user in score %}
+        <tr>
+            <td>{{user.total}}</td>
+            <td>{{user.average|floatformat:-2}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+</body>
+</html>
