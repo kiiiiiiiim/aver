@@ -153,7 +153,7 @@ def daily_score(request, date):
     year = int(date[:4])
     month = int(date[4:6])
     day = int(date[6:])
-    print(year, month, day)
+    # print(year, month, day)
 
     input_date = datetime.date(year, month, day)
 
@@ -178,7 +178,7 @@ def daily_score(request, date):
         if max_game < user.game_count:
             max_game = user.game_count
 
-    print(score_dict)
+    # print(score_dict)
     return render(request, 'score/daily_score.html',
                   {"score": publish_data, "line": len(publish_data), "date": date, "max_game": max_game})
 
