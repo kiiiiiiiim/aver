@@ -25,7 +25,7 @@ SECRET_KEY = 'tgi$&fi=2a5-&56bs0_1jic%@$754otg4*j7qopjdlx38nb9*s'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com']
+ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com','0.0.0.0','35.200.121.234']
 
 # Application definition
 
