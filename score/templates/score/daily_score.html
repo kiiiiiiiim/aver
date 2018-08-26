@@ -5,39 +5,34 @@
     <title>Title</title>
 </head>
 <body>
-<div style='width:50%; float:left'>
-    <table border="1px" align="right">
-        <tr>
-            <th>Date</th>
-            <th>Name</th>
-            <th colspan={{max_game}}>Score</th>
-        </tr>
-        {%for user in score %}
-        <tr>
-            <td>{{date}}</td>
-            <td>{{user.name}}</td>
+{% load static %}
+{% load mathfilters %}
+<table border="1px" align="center">
+    <tr>
+        <th>Date</th>
+        <th>Name</th>
+        <th colspan={{max_game}}>Score</th>
+        <th>total</th>
+        <th>average</th>
+    </tr>
+    {%for user in score %}
+    <tr>
+        <td>{{date}}</td>
+        <td>{{user.name}}</td>
 
-            {% for score_data in user.score_list %}
-            <td width="30px"><center>{{score_data}}</center></td>
-            {% endfor %}
-        </tr>
+        {% for score_data in user.score_list %}
+        <td width="30px">
+            <center><a href="/score/delete/{{date}}/{{score_data.id}}/">{{score_data.score}}</a></center>
+        </td>
         {% endfor %}
-    </table>
-</div>
+        {% if user.game_count != max_game %}
+        <td colspan={{max_game|sub:user.game_count}}>-</td>
+        {% endif %}
 
-<div style='width:50%; float:right'>
-    <table border="1px">
-        <tr>
-            <th>total</th>
-            <th>average</th>
-        </tr>
-        {%for user in score %}
-        <tr>
-            <td>{{user.total}}</td>
-            <td>{{user.average|floatformat:-2}}</td>
-        </tr>
-        {% endfor %}
-    </table>
-</div>
+        <td>{{user.total}}</td>
+        <td>{{user.average|floatformat:-2}}</td>
+    </tr>
+    {% endfor %}
+</table>
 </body>
 </html>

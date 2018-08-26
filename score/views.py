@@ -1,11 +1,9 @@
 # -*- coding:utf-8 -*-
-import sys
 
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
 from .forms import PostForm
 from .models import Score
 import datetime
-import json
 
 
 # Create your views here.
@@ -13,6 +11,28 @@ import json
 def score_list(request):
     score_list = Score.objects.all()
     return render(request, 'score/score.html', {"score": score_list})
+
+
+def input_score_by_game_count(request):
+    if request.method == 'POST':
+
+        name = request.POST.get('name')
+        count = int(request.POST.get('game_count'))
+        score = int(request.POST.get('score'))
+        game_date = request.POST.get('game_date')
+
+        for i in range(int(count)):
+            add_score = Score()
+            add_score.name = name
+            split_date = game_date.split('-')
+            add_score.date = datetime.date(int(split_date[0]), int(split_date[1]), int(split_date[2]))
+            add_score.score = score / count
+            add_score.save()
+
+        return render(request, 'score/total_new_score.html')
+        pass
+    elif request.method == 'GET':
+        return render(request, 'score/total_new_score.html')
 
 
 def monthly_score(request, date):
@@ -167,7 +187,7 @@ def daily_score(request, date):
         except Exception:
             score_dict[data.name] = []
 
-        score_dict[data.name].append(data.score)
+        score_dict[data.name].append(DailyScore(data.score, data.id))
 
     publish_data = list()
 
@@ -183,16 +203,29 @@ def daily_score(request, date):
                   {"score": publish_data, "line": len(publish_data), "date": date, "max_game": max_game})
 
 
+class DailyScore():
+    score = int()
+    id = int()
+
+    def __init__(self, score, id):
+        self.score = score
+        self.id = id
+
+
 def post(request):
     if request.method == "POST":
-         # create a form instance and populate it with data from the request:
-        form = PostForm(request.POST) #PostForm으로 부터 받은 데이터를 처리하기 위한 인스턴스 생성
-        if form.is_valid(): #폼 검증 메소드
-            score = form.save(commit = True) #lotto 오브젝트를 form으로 부터 가져오지만, 실제로 DB반영은 하지 않는다.
-            return render(request, 'score/new_score.html', {'form' : form})
+        # create a form instance and populate it with data from the request:
+        form = PostForm(request.POST)  # PostForm으로 부터 받은 데이터를 처리하기 위한 인스턴스 생성
+        if form.is_valid():  # 폼 검증 메소드
+            score = form.save(commit=True)  # lotto 오브젝트를 form으로 부터 가져오지만, 실제로 DB반영은 하지 않는다.
+            input_score = form.data.get("score")
+            input_name = form.data.get("name")
+            input_date = datetime.datetime.now().time().microsecond
+            return render(request, 'score/new_score.html',
+                          {'form': form, 'input_score': input_score, 'name': input_name, 'input_date': input_date})
     else:
-        form = PostForm() #forms.py의 PostForm 클래스의 인스턴스
-        return render(request, 'score/new_score.html', {'form' : form})  # 템플릿 파일 경로 지정, 데이터 전달
+        form = PostForm()  # forms.py의 PostForm 클래스의 인스턴스
+        return render(request, 'score/new_score.html', {'form': form})  # 템플릿 파일 경로 지정, 데이터 전달
 
 
 class DaliyUser():
@@ -217,5 +250,11 @@ class UserScore():
         self.game_count = 0
         for score in score_list:
             self.game_count = self.game_count + 1
-            self.total = self.total + score
+            self.total = self.total + score.score
         self.average = self.total / float(self.game_count)
+
+
+def score_delete(request, date, id):
+    score = Score.objects.get(pk=id)
+    score.delete()
+    return daily_score(request, date)
