@@ -7,10 +7,13 @@
   <div class="page-header">
    <h1>GGUN</h1>
   </div>
-  <div class="container lotto">
-   <form method="POST" class="post-form">
+  <div class="new score">
+   <form method="POST" class="post-form" action="#">
        {%csrf_token%}  <!-- 보안이슈로 입력 -->
        {{form.as_p}}
+       {% if input_score %}
+       <p>{{name}} {{input_score}} {{input_date}} </p>
+       {% endif %}
      <button type="submit" class="save btn btn-default">Save</button>
    </form>
   </div>
