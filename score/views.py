@@ -48,7 +48,7 @@ def monthly_score(request, date):
         except Exception:
             score_dict[data.name] = []
 
-        score_dict[data.name].append(data.score)
+        score_dict[data.name].append(DailyScore(data.score, data.id))
 
     publish_data = list()
 
@@ -141,7 +141,7 @@ def get_monthly_score(date):
                 pass
         except Exception:
             score_dict[data.name] = []
-        score_dict[data.name].append(data.score)
+        score_dict[data.name].append(DailyScore(data.score, data.id))
     user_dict = dict()
     publish_data = list()
     average_dict = dict()
