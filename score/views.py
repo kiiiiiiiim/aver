@@ -20,7 +20,8 @@ def input_score_by_game_count(request):
         count = int(request.POST.get('game_count'))
         score = int(request.POST.get('score'))
         game_date = request.POST.get('game_date')
-        total_score = (score / count) * count
+        total_score = (int(score / count)) * count
+        print(total_score)
         _score = int()
         if (total_score < score):
             _score = score - total_score
@@ -30,6 +31,7 @@ def input_score_by_game_count(request):
             split_date = game_date.split('-')
             add_score.date = datetime.date(int(split_date[0]), int(split_date[1]), int(split_date[2]))
             add_score.score = (score / count) + _score
+            print("[Score] ", add_score.score)
             _score = 0
             add_score.save()
 
