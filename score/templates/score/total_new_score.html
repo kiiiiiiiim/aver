@@ -11,7 +11,7 @@
 
     <form method="POST" class="post-form" action="/score/new/gamecount/"> {% csrf_token %}
         이름 <input type="text" name="name"><br>
-        날짜 <input type="date" name="game_date"><br>
+        날짜 <input type="datetime" name="game_date"><br>
         게임 <input type="number" name="game_count"><br>
         총핀 <input type="number" name="score"><br>
         <button type="submit" class="save btn btn-default">Save</button>
