@@ -1,21 +1,37 @@
 {% load staticfiles %}
 <html lang="ko">
- <head>
-  <title>GGUN</title>
- </head>
- <body>
-  <div class="page-header">
-   <h1>GGUN</h1>
-  </div>
-  <div class="new score">
-   <form method="POST" class="post-form" action="#">
-       {%csrf_token%}  <!-- 보안이슈로 입력 -->
-       {{form.as_p}}
-       {% if input_score %}
-       <p>{{name}} {{input_score}} {{input_date}} </p>
-       {% endif %}
-     <button type="submit" class="save btn btn-default">Save</button>
-   </form>
-  </div>
- </body>
+<head>
+    <title>GGUN</title>
+</head>
+<body>
+<div class="page-header">
+    <h1>GGUN</h1>
+</div>
+<form method="POST" class="post-form" action="/score/new/"> {% csrf_token %}
+    이름 <input type="text" name="name" value="{{name}}"><br>
+    날짜 <input type="datetime" name="game_date" value="{{input_date}}"><br>
+    점수 <input type="number" name="score"><br>
+    볼링장 <select name="location">
+        <option value="-1">---</option>
+        {% for location in location_list %}
+        {% if location.id == selected_location_id %}
+        <option value="{{location.id}}" selected="selected">{{location.name}}</option>
+        {% else %}
+        <option value="{{location.id}}">{{location.name}}</option>
+        {% endif %}
+        {% endfor %}
+    </select> <br>
+    클럽 <select name="club">
+        <option value="-1">---</option>
+        {% for club in club_list %}
+        {% if club.id == selected_club_id %}
+        <option value="{{club.id}}" selected="selected">{{club.name}}</option>
+        {% else %}
+        <option value="{{club.id}}">{{club.name}}</option>
+        {% endif %}
+        {% endfor %}
+    </select> <br>
+    <button type="submit" class="save btn btn-default">Save</button>
+</form>
+</body>
 </html>

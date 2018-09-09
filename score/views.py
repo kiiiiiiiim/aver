@@ -42,23 +42,72 @@ def input_score_by_game_count(request):
         if (total_score < score):
             _score = score - total_score
         for i in range(int(count)):
-            add_score = Score()
-            add_score.name = name
-            split_date = game_date.split('-')
-            add_score.date = datetime.date(int(split_date[0]), int(split_date[1]), int(split_date[2]))
-            add_score.score = (score / count) + _score
+            game_score = (score / count) + _score
             _score = 0
+            select_club = None
+            select_location = None
             if club:
-                add_score.club = club[0]
+                select_club = club[0]
             if location:
-                add_score.location = location[0]
-            add_score.save()
+                select_location = location[0]
+            input_score(name, game_date, game_score, select_club, select_location)
         return render(request, 'score/total_new_score.html', {'club_list': club_list, 'location_list': location_list,
                                                               'selected_club_id': club_id,
                                                               'selected_location_id': location_id,
                                                               'input_date': game_date})
     elif request.method == 'GET':
         return render(request, 'score/total_new_score.html', {'club_list': club_list, 'location_list': location_list})
+
+
+def input_one_score(request):
+    club_list = Club.objects.all()
+    location_list = Location.objects.all()
+
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        score = int(request.POST.get('score'))
+        game_date = request.POST.get('game_date')
+        location_id = int(request.POST.get('location'))
+        club_id = int(request.POST.get('club'))
+
+        location = None
+        club = None
+
+        if request.POST.get('location') != '-1':
+            location = Location.objects.filter(pk=location_id)
+        if request.POST.get('club') != '-1':
+            club = Club.objects.filter(pk=club_id)
+
+        _score = 0
+        select_club = None
+        select_location = None
+        if club:
+            select_club = club[0]
+        if location:
+            select_location = location[0]
+        input_score(name, game_date, score, select_club, select_location)
+
+        return render(request, 'score/new_score.html', {'club_list': club_list,
+                                                        'location_list': location_list,
+                                                        'selected_club_id': club_id,
+                                                        'selected_location_id': location_id,
+                                                        'input_date': game_date,
+                                                        'name': name})
+    elif request.method == 'GET':
+        return render(request, 'score/new_score.html', {'club_list': club_list, 'location_list': location_list})
+
+
+def input_score(name, date, score, club, location):
+    add_score = Score()
+    add_score.name = name
+    add_score.score = score
+    add_score.club = club
+    add_score.location = location
+
+    split_date = date.split('-')
+    add_score.date = datetime.date(int(split_date[0]), int(split_date[1]), int(split_date[2]))
+
+    add_score.save()
 
 
 def monthly_score(request, date):
