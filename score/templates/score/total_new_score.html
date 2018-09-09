@@ -11,9 +11,29 @@
 
     <form method="POST" class="post-form" action="/score/new/gamecount/"> {% csrf_token %}
         이름 <input type="text" name="name"><br>
-        날짜 <input type="datetime" name="game_date"><br>
+        날짜 <input type="datetime" name="game_date" value="{{input_date}}"><br>
         게임 <input type="number" name="game_count"><br>
         총핀 <input type="number" name="score"><br>
+        볼링장 <select name="location">
+            <option value="-1">---</option>
+            {% for location in location_list %}
+            {% if location.id == selected_location_id %}
+            <option value="{{location.id}}" selected="selected">{{location.name}}</option>
+            {% else %}
+            <option value="{{location.id}}">{{location.name}}</option>
+            {% endif %}
+            {% endfor %}
+        </select> <br>
+        클럽 <select name="club">
+            <option value="-1">---</option>
+            {% for club in club_list %}
+            {% if club.id == selected_club_id %}
+            <option value="{{club.id}}" selected="selected">{{club.name}}</option>
+            {% else %}
+            <option value="{{club.id}}">{{club.name}}</option>
+            {% endif %}
+            {% endfor %}
+        </select> <br>
         <button type="submit" class="save btn btn-default">Save</button>
     </form>
 </div>

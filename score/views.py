@@ -3,6 +3,8 @@
 from django.shortcuts import render, redirect
 from .forms import PostForm
 from .models import Score
+from .models import Club
+from .models import Location
 import datetime
 
 
@@ -14,6 +16,9 @@ def score_list(request):
 
 
 def input_score_by_game_count(request):
+    club_list = Club.objects.all()
+    location_list = Location.objects.all()
+
     if request.method == 'POST':
 
         name = request.POST.get('name')
@@ -22,6 +27,18 @@ def input_score_by_game_count(request):
         game_date = request.POST.get('game_date')
         total_score = (int(score / count)) * count
         _score = int()
+
+        location_id = int(request.POST.get('location'))
+        club_id = int(request.POST.get('club'))
+
+        location = None
+        club = None
+
+        if request.POST.get('location') != '-1':
+            location = Location.objects.filter(pk=location_id)
+        if request.POST.get('club') != '-1':
+            club = Club.objects.filter(pk=club_id)
+
         if (total_score < score):
             _score = score - total_score
         for i in range(int(count)):
@@ -31,18 +48,42 @@ def input_score_by_game_count(request):
             add_score.date = datetime.date(int(split_date[0]), int(split_date[1]), int(split_date[2]))
             add_score.score = (score / count) + _score
             _score = 0
+            if club:
+                add_score.club = club[0]
+            if location:
+                add_score.location = location[0]
             add_score.save()
-
-        return render(request, 'score/total_new_score.html')
-        pass
+        return render(request, 'score/total_new_score.html', {'club_list': club_list, 'location_list': location_list,
+                                                              'selected_club_id': club_id,
+                                                              'selected_location_id': location_id,
+                                                              'input_date': game_date})
     elif request.method == 'GET':
-        return render(request, 'score/total_new_score.html')
+        return render(request, 'score/total_new_score.html', {'club_list': club_list, 'location_list': location_list})
 
 
 def monthly_score(request, date):
+    club_list = Club.objects.all()
+    location_list = Location.objects.all()
     year = int(date[:4])
     month = int(date[4:])
-    score_list = Score.objects.filter(date__year=year, date__month=month)
+
+    score_list = None
+    location_id = '-1'
+    club_id = '-1'
+    if request.method == 'POST':
+        location_id = request.POST.get('location')
+        club_id = request.POST.get('club')
+        if location_id != '-1' and club_id != '-1':
+            score_list = Score.objects.filter(location_id=location_id, club_id=club_id, date__year=year,
+                                              date__month=month)
+        elif location_id != '-1' and club_id == '-1':
+            score_list = Score.objects.filter(location_id=location_id, date__year=year, date__month=month)
+        elif location_id == '-1' and club_id != '-1':
+            score_list = Score.objects.filter(club_id=club_id, date__year=year, date__month=month)
+        else:
+            score_list = Score.objects.filter(date__year=year, date__month=month)
+    else:
+        score_list = Score.objects.filter(date__year=year, date__month=month)
 
     score_dict = dict()
     for data in score_list:
@@ -101,7 +142,7 @@ def monthly_score(request, date):
     else:
         month = month - 1
 
-    pre_month_data = get_monthly_score(str(year) + str(month))
+    pre_month_data = get_monthly_score(str(year) + str(month), club_id=club_id, location_id=location_id)
     # print(pre_month_data["권영균"].rank)
     # print(pre_month_data["류지원"].rank)
 
@@ -130,13 +171,28 @@ def monthly_score(request, date):
 
     return render(request, 'score/monthly_score.html',
                   {"score": sorted_publish_data, "line": len(publish_data), "date": date, "max_game": max_game,
-                   "rank": name_rank_dict})
+                   "rank": name_rank_dict, 'club_list': club_list, 'location_list': location_list,
+                   'selected_club_id': int(club_id), 'selected_location_id': int(location_id)})
 
 
-def get_monthly_score(date):
+def get_monthly_score(date, club_id, location_id):
+    if club_id == None:
+        club_id = '-1'
+    if location_id == None:
+        location_id = '-1'
     year = int(date[:4])
     month = int(date[4:])
-    score_list = Score.objects.filter(date__year=year, date__month=month)
+
+    score_list = None
+
+    if location_id != '-1' and club_id != '-1':
+        score_list = Score.objects.filter(location_id=location_id, club_id=club_id, date__year=year, date__month=month)
+    elif location_id != '-1' and club_id == '-1':
+        score_list = Score.objects.filter(location_id=location_id, date__year=year, date__month=month)
+    elif location_id == '-1' and club_id != '-1':
+        score_list = Score.objects.filter(club_id=club_id, date__year=year, date__month=month)
+    else:
+        score_list = Score.objects.filter(date__year=year, date__month=month)
 
     score_dict = dict()
     for data in score_list:

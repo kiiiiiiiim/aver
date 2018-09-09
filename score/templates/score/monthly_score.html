@@ -8,7 +8,33 @@
     <title>Title</title>
 </head>
 <body>
+</center>
 <center><h1>{{date}}</h1></center>
+<form method="POST" class="post-form" action="/monthly/{{date}}/"> {% csrf_token %}
+    <center> 볼링장 <select name="location">
+        <option value="-1">---</option>
+        {% for location in location_list %}
+        {% if location.id == selected_location_id %}
+        <option value="{{location.id}}" selected="selected">{{location.name}}</option>
+        {% else %}
+        <option value="{{location.id}}">{{location.name}}</option>
+        {% endif %}
+        {% endfor %}
+    </select>
+        클럽 <select name="club">
+            <option value="-1">---</option>
+            {% for club in club_list %}
+            {% if club.id == selected_club_id %}
+            <option value="{{club.id}}" selected="selected">{{club.name}}</option>
+            {% else %}
+            <option value="{{club.id}}">{{club.name}}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+        <button type="submit" class="save btn btn-default">필터</button>
+    </center>
+</form>
+
 <table border="1px" align="center">
     <tr>
         <th>Rank</th>
