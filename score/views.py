@@ -110,6 +110,12 @@ def input_score(name, date, score, club, location):
     add_score.save()
 
 
+def monthly_score_this_month(request):
+    now = datetime.datetime.now()
+    this_date = str(f'{now.year:0>4}'+f'{now.month:0>2}')
+    return monthly_score(request, this_date)
+
+
 def monthly_score(request, date):
     club_list = Club.objects.all()
     location_list = Location.objects.all()

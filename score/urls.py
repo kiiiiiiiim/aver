@@ -5,6 +5,7 @@ urlpatterns = [
     url(r'^score/$', views.score_list, name='score_list'),
     url(r'^daily/(?P<date>.+)/$', views.daily_score),
     url(r'^monthly/(?P<date>.+)/$', views.monthly_score),
+    url(r'^monthly/$', views.monthly_score_this_month),
     url(r'^score/new/gamecount/$', views.input_score_by_game_count),
     url(r'^score/new/$', views.input_one_score),
     url(r'^score/delete/(?P<date>.+)/(?P<id>.+)/$', views.score_delete)
